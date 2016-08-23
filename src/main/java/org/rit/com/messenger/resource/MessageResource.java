@@ -2,6 +2,7 @@ package org.rit.com.messenger.resource;
 
 import java.util.List;
 
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -10,10 +11,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.rit.com.messenger.model.Message;
+import org.rit.com.messenger.resource.beans.MessageFilterBean;
 import org.rit.com.messenger.service.MessageService;
 
 @Path("/messages")
@@ -23,14 +24,12 @@ public class MessageResource {
 	
 	MessageService  messageService=new MessageService();
 	@GET
-	public List<Message> getMessages(@QueryParam("year") int year
-			                         ,@QueryParam("start") int start
-			                         ,@QueryParam("size") int size){
-		if(year>0){
-			return messageService.getAllMessagesForYear(year);
+	public List<Message> getMessages(@BeanParam MessageFilterBean messageFilter){
+		if(messageFilter.getYear()>0){
+			return messageService.getAllMessagesForYear(messageFilter.getYear());
 		}
-		if(start>=0&&size>=0){
-			return messageService.getMessagePaginated(start, size);
+		if(messageFilter.getStart()>=0&&messageFilter.getSize()>=0){
+			return messageService.getMessagePaginated(messageFilter.getStart(), messageFilter.getSize());
 		}
 		return messageService.getAllMessages();
 	}
